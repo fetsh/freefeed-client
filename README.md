@@ -2,7 +2,7 @@
 
 Ruby wrapper for [Freefeed API](https://fetsh.github.io/freefeed-api).
 
-[![Gem Version](https://badge.fury.io/rb/feefeed-client.svg)](http://badge.fury.io/rb/freefeed-client)
+[![Gem Version](https://badge.fury.io/rb/freefeed-client.svg)](https://badge.fury.io/rb/freefeed-client)
 
 ## Installation
 
