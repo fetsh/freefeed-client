@@ -10,11 +10,10 @@ module Freefeed
     end
 
     def authenticate(username:, password:)
-      res = call!(
-        :post, 'https://freefeed.net/v1/session',
-        username: username, password: password
-      )
-      res.tap { |re| @api_token = re.fetch('authToken') }
+      Session.new(client: self)
+             .create(username: username, password: password).tap do |re|
+        @api_token = re.fetch('authToken')
+      end
     end
 
     def call(endpoint, params = {}, headers = {})

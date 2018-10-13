@@ -4,7 +4,7 @@ module Freefeed
       action :create do
         verb :post
         version :v1
-        path '/sessions'
+        path '/session'
       end
     end
   end
