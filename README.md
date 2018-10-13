@@ -83,7 +83,7 @@ client.posts.create({post: {body: 'Hello World!'}, meta: {feeds: ['yourusername'
 
 ## Logging
 
-By default, `freefeed-client` logs everything to STDOUT. You can change this behavior and provide your own logger class with someo ptions. See example below:
+By default, `freefeed-client` logs everything to STDOUT. You can change this behavior and provide your own logger class with some options. See example below:
 
 ```ruby
 client = Freefeed::Client.new(
