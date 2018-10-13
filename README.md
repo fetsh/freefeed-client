@@ -1,41 +1,94 @@
-# Freefeed
+# freefeed-client
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/freefeed`. To experiment with that code, run `bin/console` for an interactive prompt.
+Ruby wrapper for [Freefeed API](https://fetsh.github.io/freefeed-api).
 
-TODO: Delete this and the text above, and describe your gem
+[![Gem Version](https://badge.fury.io/rb/feefeed-client.svg)](http://badge.fury.io/rb/freefeed-client)
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add following line to your Gemfile:
 
 ```ruby
-gem 'freefeed'
+gem 'freefeed-client'
 ```
 
 And then execute:
 
-    $ bundle
+```shell
+$ bundle
+```
 
-Or install it yourself as:
+Or install it system-wide:
 
-    $ gem install freefeed
+```shell
+$ gem install freefeed-client
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+First things first, you need to [obtain a token](https://fetsh.github.io/freefeed-api/#authentication) for your user. Then create your api client like this:
 
-## Development
+```ruby
+require 'freefeed'
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+client = Freefeed::Client.new('yourFreefeedAPIToken')
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+post = Freefeed::Types::PostCreate.new(
+  {
+    post: { 
+      body: 'Hello World!'
+    },
+    meta: {
+      feeds: ['yourusername']
+    }
+  }
+)
 
-## Contributing
+post_resource = Freefeed::Post.new(client: client)
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/freefeed.
+post_resource.create(post)
+```
+
+You can skip instantiating resource, but I'm not sure it is a good practice:
+
+```ruby
+require 'freefeed'
+
+client = Freefeed::Client.new('yourFreefeedAPIToken')
+
+post = Freefeed::Types::PostCreate.new(
+  {
+    post: { 
+      body: 'Hello World!'
+    },
+    meta: {
+      feeds: ['yourusername']
+    }
+  }
+)
+
+client.posts.create(post)
+```
+
+You can even skip instantiating post type, but you will lose some validation:
 
 
-## License
+```ruby
+require 'freefeed'
 
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+client = Freefeed::Client.new('yourFreefeedAPIToken')
 
+client.posts.create({post: {body: 'Hello World!'}, meta: {feeds: ['yourusername']}})
+```
+
+## Logging
+
+By default, `freefeed-client` logs everything to STDOUT. You can change this behavior and provide your own logger class with someoptions. See example below:
+
+```ruby
+client = Freefeed::Client.new(
+  'yourFreefeedAPIToken',
+  logger: Logger.new('log.txt'),
+  logger_options: {bodies: false, headers: false}
+)
+```

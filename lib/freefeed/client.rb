@@ -2,11 +2,11 @@ module Freefeed
   class Client
     HOST = 'freefeed.net'.freeze
 
-    attr_accessor :api_token, :http_options, :resources
+    attr_accessor :api_token, :faraday_options, :resources
 
-    def initialize(api_token = nil, http_options = {})
+    def initialize(api_token = nil, faraday_options = {})
       @api_token = api_token
-      @http_options = http_options
+      @faraday_options = faraday_options
     end
 
     def authenticate(username:, password:)
@@ -38,9 +38,13 @@ module Freefeed
     def conn
       @conn ||= Faraday.new(url: "https://#{HOST}") do |faraday|
         faraday.request :multipart
-        faraday.response(:logger, Logger.new(STDOUT), bodies: true)
+        faraday.response(
+          :logger,
+          (faraday_options[:logger] || Logger.new(STDOUT)),
+          (faraday_options[:logger_options] || { bodies: true, headers: true })
+        )
         faraday.request :json
-        faraday.adapter http_options[:adapter] || Faraday.default_adapter
+        faraday.adapter faraday_options[:adapter] || Faraday.default_adapter
       end
     end
 

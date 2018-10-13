@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'freefeed/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'freefeed'
+  spec.name          = 'freefeed-client'
   spec.version       = Freefeed::VERSION
   spec.authors       = ['Ilia Zemskov']
   spec.email         = ['me@fetsh.me']
 
   spec.summary       = 'Ruby wrapper for FreeFeed API.'
-  spec.homepage      = 'https://github.com/fetsh/freefeed'
+  spec.homepage      = 'https://github.com/fetsh/freefeed-client'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
