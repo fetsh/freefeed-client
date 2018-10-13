@@ -49,7 +49,7 @@ post_resource = Freefeed::Post.new(client: client)
 post_resource.create(post)
 ```
 
-You can skip instantiating resource, but I'm not sure it is a good practice:
+You can skip instantiating resource, but I'm not sure if this is a good practice:
 
 ```ruby
 require 'freefeed'
@@ -83,7 +83,7 @@ client.posts.create({post: {body: 'Hello World!'}, meta: {feeds: ['yourusername'
 
 ## Logging
 
-By default, `freefeed-client` logs everything to STDOUT. You can change this behavior and provide your own logger class with someoptions. See example below:
+By default, `freefeed-client` logs everything to STDOUT. You can change this behavior and provide your own logger class with someo ptions. See example below:
 
 ```ruby
 client = Freefeed::Client.new(
