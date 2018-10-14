@@ -10,18 +10,9 @@ module Freefeed
     end
 
     def authenticate(username:, password:)
-      Session.new(client: self)
-             .create(username: username, password: password).tap do |re|
+      Session.create(self, username: username, password: password).tap do |re|
         @api_token = re.fetch('authToken')
       end
-    end
-
-    def call(endpoint, params = {}, headers = {})
-      guard_wrong_endpoint(endpoint)
-      call!(
-        ENDPOINTS[endpoint][:method], path(endpoint),
-        build_options(endpoint, params), headers
-      )
     end
 
     def call!(verb, endpoint, params = {}, headers = {})
@@ -44,29 +35,6 @@ module Freefeed
         )
         faraday.request :json
         faraday.adapter faraday_options[:adapter] || Faraday.default_adapter
-      end
-    end
-
-    def guard_wrong_endpoint(endpoint)
-      raise Exceptions::WrongEndpoint unless ENDPOINTS.keys.include?(endpoint)
-    end
-
-    def build_options(endpoint, params)
-      default_params(endpoint).merge(sanitize_params(endpoint, params))
-    end
-
-    def path(endpoint)
-      (endpoint.start_with?('/') ? '' : BASE_PATH) + endpoint.split('#').first
-    end
-
-    def default_params(endpoint)
-      {}.merge(ENDPOINTS[endpoint][:default_params] || {})
-    end
-
-    def sanitize_params(endpoint, params)
-      return {} unless ENDPOINTS[endpoint][:params]
-      params.delete_if do |key, _|
-        !ENDPOINTS[endpoint][:params].include?(key.to_s)
       end
     end
 

@@ -44,12 +44,10 @@ post = Freefeed::Types::PostCreate.new(
   }
 )
 
-post_resource = Freefeed::Post.new(client: client)
-
-post_resource.create(post)
+Freefeed::Post.create(client, post)
 ```
 
-You can skip instantiating resource, but I'm not sure if this is a good practice:
+You can achive the same result without addressing `Freefeed::Post` class directly:
 
 ```ruby
 require 'freefeed'
@@ -67,10 +65,10 @@ post = Freefeed::Types::PostCreate.new(
   }
 )
 
-client.posts.create(post)
+client.posts_create(post)
 ```
 
-You can even skip instantiating post type, but you will lose some validation:
+You can even skip instantiating `PostCreate` type, but you will lose some validation:
 
 
 ```ruby
@@ -78,7 +76,7 @@ require 'freefeed'
 
 client = Freefeed::Client.new('yourFreefeedAPIToken')
 
-client.posts.create({post: {body: 'Hello World!'}, meta: {feeds: ['yourusername']}})
+client.posts_create({post: {body: 'Hello World!'}, meta: {feeds: ['yourusername']}})
 ```
 
 ## Logging

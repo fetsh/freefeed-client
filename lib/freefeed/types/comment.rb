@@ -3,14 +3,16 @@ require 'dry-struct'
 module Freefeed
   module Types
     class CommentCreate < Dry::Struct
-      attribute :comment, Types::Hash.schema(
-        body: Types::Body,
-        postId: Types::UID
-      )
+      attribute :comment do
+        attribute :body, Types::Body
+        attribute :postId, Types::UID
+      end
     end
 
     class CommentUpdate < Dry::Struct
-      attribute :comment, Types::Hash.schema(body: Types::Body)
+      attribute :comment do
+        attribute :body, Types::Body
+      end
     end
   end
 end

@@ -2,7 +2,7 @@ module ResourceKitling
   require 'forwardable'
   class ActionCollection
     extend Forwardable
-    def_delegators :@collection, :find, :<<, :each, :include?
+    def_delegators :@collection, :find, :<<, :each, :include?, :map
     def initialize
       @collection = []
     end
@@ -46,6 +46,10 @@ module ResourceKitling
         np.gsub(":#{key}", value.to_s)
       end
     end
+
+    def to_s
+      name
+    end
   end
   class Resource
     class << self
@@ -62,16 +66,15 @@ module ResourceKitling
       self._actions ||= ActionCollection.new
       if block_given?
         self._actions.instance_eval(&block)
-        # MethodFactory.construct(self, self._actions)
         self._actions.each do |action|
-          if method_defined?(action.name)
+          if respond_to?(action.name.to_sym)
             raise(
               ArgumentError,
               "Action '#{action.name}' is already defined on `#{self}`"
             )
           end
           method_block = method_for_action(action)
-          send(:define_method, action.name, &method_block)
+          send(:define_singleton_method, action.name, &method_block)
         end
       end
       self._actions
@@ -79,6 +82,7 @@ module ResourceKitling
 
     def self.method_for_action(action)
       Proc.new do |*args|
+        client = args.shift
         pathopts = action.path.include?(':') ? args.shift : {}
         payload = args.shift
         payload = payload.to_h if payload.respond_to?(:to_h)
@@ -92,10 +96,7 @@ module ResourceKitling
       self.class.actions
     end
 
-    attr_reader :client
-
-    def initialize(client: nil)
-      @client = client
+    def initialize
     end
   end
 end

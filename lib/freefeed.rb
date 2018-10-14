@@ -31,16 +31,16 @@ require 'freefeed/types/comment'
 require 'freefeed/types/post'
 
 ResourceKitling::Resource.subclasses.each do |sc|
-  mn = sc.to_s.downcase.split('::').last.pluralize
-  if Freefeed::Client.method_defined?(mn)
-    raise(
-      ArgumentError,
-      "Method '#{mn}' is already defined on Freefeed::Client"
-    )
-  end
-  Freefeed::Client.send(:define_method, mn) do
-    instance_variable_get("@#{mn}") || instance_variable_set(
-      "@#{mn}", sc.new(client: self)
-    )
+  sc.actions.each do |an|
+    mn = "#{sc.to_s.downcase.split('::').last.pluralize}_#{an.name}"
+    if Freefeed::Client.method_defined?(mn)
+      raise(
+        ArgumentError,
+        "Method '#{mn}' is already defined on Freefeed::Client"
+      )
+    end
+    Freefeed::Client.send(:define_method, mn) do |*args|
+      sc.create(self, *args)
+    end
   end
 end
